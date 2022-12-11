@@ -1,3 +1,4 @@
 from django.shortcuts import render
 
-# Create your views here.
+def insert_code(request):
+    return render(request, 'foodTrackingSystem/insert_code.html')
