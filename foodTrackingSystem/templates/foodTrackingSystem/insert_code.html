@@ -1,8 +1,18 @@
 {% extends 'foodTrackingSystem/base.html' %}
 
-{% block content %}
-    <h2>Inserire il codice del prodotto:</h2>
+{% block insert %}
+    <!-- <h2>Inserire il codice del prodotto:</h2>
     <label for="code">Inserire il codice del prodotto:</label>
     <input type="text" id="code" name="code"><br><br>
-    <input type="submit" value="Submit">
+    <input type="submit" value="Submit"> -->
+    <h2>Find product by code</h2>
+    <form method="POST" class="product-form">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Find product</button>
+    </form>
+    <div>
+        <br>
+        {% block detail %}
+        {% endblock %}
+    </div>
 {% endblock %}

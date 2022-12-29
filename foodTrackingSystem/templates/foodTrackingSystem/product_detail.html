@@ -1,0 +1,13 @@
+{% extends 'foodTrackingSystem/insert_code.html' %}
+
+{% block detail %}
+    {% if product %}
+        <br><hr><br>
+        <h2>Product details</h2>
+        <br>
+        <p>Code: {{ product.code }}</p>
+        <p>Text: {{ product.text }}</p>
+        <p>Text hash: {{ product.hash }}</p>
+        <p>Transaction Id (Ethereum Sepolia Blockchain): {{ product.txId }}</p>
+    {% endif %}
+{% endblock %}
