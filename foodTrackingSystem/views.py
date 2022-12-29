@@ -1,6 +1,7 @@
 import json
 from django.shortcuts import get_object_or_404, render
-from foodTrackingSystem.forms import ProductForm
+from foodTrackingSystem.forms import *
+from django.core.exceptions import EmptyResultSet
 
 from foodTrackingSystem.models import Product
 
@@ -17,9 +18,15 @@ def insert_code(request):
             print('form is valid')
             code = request.POST.get('code')
             print('code: ', code)
-            product = Product.objects.filter(code=code).get() # sempre singolo product
-            print('product: ', product)
-        return render(request, 'foodTrackingSystem/product_detail.html', {'form': form, 'product': product})
+            product = Product()
+            products = Product.objects.filter(code=code) # sempre singolo product
+            print(products)
+            if products:
+                product = products.get()
+                print('product: ', product)
+                return render(request, 'foodTrackingSystem/product_detail.html', {'form': form, 'product': product})
+            return render(request, 'foodTrackingSystem/product_detail.html', {'form': form})
+        
         
 
 

@@ -9,5 +9,8 @@
         <p>Text: {{ product.text }}</p>
         <p>Text hash: {{ product.hash }}</p>
         <p>Transaction Id (Ethereum Sepolia Blockchain): {{ product.txId }}</p>
+    {% else %}
+        <br><hr><br>
+        <h3>No product available with the entered code, please enter a correct one!</h3>
     {% endif %}
 {% endblock %}
