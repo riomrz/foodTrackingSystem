@@ -5,9 +5,11 @@ import hashlib
 """ from rest_framework import status
 from rest_framework.response import Response """
 
+""" QUANDO FAI MODIFICHE AI MODELLI APPLICA MIGRATION A DB!!! """
+
 class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    code = models.CharField(max_length=50)
+    code = models.CharField(max_length=50, unique=True)
     text = models.TextField()
     hash = models.CharField(max_length=64, default=None, null=True) # editable=false non va bene perchè toglie il campo anche in modifica (non lo voglio modificare ma almeno così posso vederlo, poi ignoro le modifiche)
     txId = models.CharField(max_length=66, default=None, null=True)
