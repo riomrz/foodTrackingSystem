@@ -32,20 +32,3 @@ def insert_code(request):
 def product_detail(request, code):
     product = get_object_or_404(Product, code=code)
     return render(request, 'foodTrackingSystem/product_detail.html')
-
-def custom_login(request):
-    print('custom login')
-    print(request.POST)
-    """ username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        # Redirect to a success page.
-        print("user")
-    else:
-        # Return an 'invalid login' error message.
-        print("no user") """
-    form = ProductForm()
-    return render(request, 'foodTrackingSystem/insert_code.html', {'form': form})
-    # return render(request, 'myvenv/Lib/site-packages/django/contrib/admin/templates/admin/index.html')

@@ -1,10 +1,11 @@
+from msilib.schema import Registry
 from django.contrib import admin
 from .models import Product
 
 from django.template.response import TemplateResponse
 from django.urls import path
 
-# admin.site.register(Product)
+from foodTrackingSystem import models
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -12,23 +13,24 @@ class ProductAdmin(admin.ModelAdmin):
 
 class FoodTrackingSystemAdminArea(admin.AdminSite):
     site_header = 'Food Tracking System Admin Area'
-    
-    """ def get_urls(self):
+
+    def get_urls(self):
         urls = super().get_urls()
         my_urls = [
-            path('login/', self.admin_site.admin_view(self.custom_login)) # *** RISOLVERE ***
+            path('', self.admin_view(self.log_on_redis)) # *** RISOLVERE ***
         ]
         return my_urls + urls
 
-    def custom_login(self, request):
-        print("get urls custom login")
+    def log_on_redis(self, request):
+        print("log on redis")
         context = dict(
            # Include common variables for rendering the admin template.
-           self.admin_site.each_context(request),
+           self.each_context(request),
            # Anything else you want in the context...
            # key=value,
         )
-        return TemplateResponse(request, "sometemplate.html", context) """
+        print("context: ", context)
+        return TemplateResponse(request, "admin/base_site.html", context) # FUNZIONA solo se lo mando su admin/base.html
     
 foodTrackingSystem_admin_site = FoodTrackingSystemAdminArea(name="FoodTrackingSystemAdmin")
-foodTrackingSystem_admin_site.register(Product)
+foodTrackingSystem_admin_site.register(models.Product)

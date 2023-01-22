@@ -19,7 +19,6 @@ from foodTrackingSystem.admin import foodTrackingSystem_admin_site
 
 urlpatterns = [
     path('admin/', admin.site.urls), # POI METTERE QUI IL CUSTOM ADMIN
-    path('customadmin/login/', views.custom_login, name='custom_login'),
     path('customadmin/', foodTrackingSystem_admin_site.urls),
     path('', include('foodTrackingSystem.urls')),
 ]
