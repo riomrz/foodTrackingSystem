@@ -1,4 +1,3 @@
-from msilib.schema import Registry
 from django.contrib import admin
 from .models import Product
 
