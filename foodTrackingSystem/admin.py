@@ -1,14 +1,20 @@
 from django.contrib import admin
 from .models import Product
-
 from django.template.response import TemplateResponse
 from django.urls import path
-
 from foodTrackingSystem import models
+import redis
+from django.shortcuts import render
+
+
+SERVER_IP = '127.0.0.1'
+SERVER_PORT = '6379'
+PASSWORD = ''
+DB = 0
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    exclude = ('hash', 'txId') # funziona ma poi non mi mostra i campi nemmeno negli oggetti già creati
+    readonly_fields = ['code', 'hash', 'txId'] # not working
 
 class FoodTrackingSystemAdminArea(admin.AdminSite):
     site_header = 'Food Tracking System Admin Area'
@@ -16,12 +22,14 @@ class FoodTrackingSystemAdminArea(admin.AdminSite):
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
-            path('', self.admin_view(self.log_on_redis)) # *** RISOLVERE ***
+            path('', self.admin_view(self.log_on_redis))
         ]
         return my_urls + urls
 
     def log_on_redis(self, request):
         print("log on redis")
+
+        # create context to return template
         context = dict(
            # Include common variables for rendering the admin template.
            self.each_context(request),
@@ -29,7 +37,31 @@ class FoodTrackingSystemAdminArea(admin.AdminSite):
            # key=value,
         )
         print("context: ", context)
-        return TemplateResponse(request, "admin/base_site.html", context) # FUNZIONA solo se lo mando su admin/base.html
+
+        # check ip (redis client errors don't break the app)
+        try:
+            client = redis.StrictRedis(host=SERVER_IP, 
+                                    port=SERVER_PORT, 
+                                    password=PASSWORD,
+                                    db=DB,
+                                    charset="utf-8", 
+                                    decode_responses=True)
+            current_ip = request.META['REMOTE_ADDR']
+            print("current_ip:", current_ip)
+            user_email = request.user.email # users must have an email
+            print("user_email: ", user_email)
+            last_ip = client.get(user_email)
+            print("last_ip:", last_ip)
+            if current_ip != last_ip:
+                client.set(user_email, current_ip)
+        except redis.exceptions.RedisError:
+            print("No Redis client")
+            return render(request, 'foodTrackingSystem/login_error.html')
+        except:
+            print("Exception in log_on_redis custom admin method")
+            return render(request, 'foodTrackingSystem/login_error.html')
+
+        return TemplateResponse(request, "admin/base_site.html", context) # works only sending the user on admin/base.html
     
 foodTrackingSystem_admin_site = FoodTrackingSystemAdminArea(name="FoodTrackingSystemAdmin")
 foodTrackingSystem_admin_site.register(models.Product)

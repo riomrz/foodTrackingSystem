@@ -9,6 +9,8 @@
         <p>Text: {{ product.text }}</p>
         <p>Text hash: {{ product.hash }}</p>
         <p>Transaction Id (Ethereum Sepolia Blockchain): {{ product.txId }}</p>
+        <a class="btn btn-default" href="https://sepolia.etherscan.io/tx/{{ product.txId }}">Check on Etherscan</a>
+        <p></p>
     {% else %}
         <br><hr><br>
         <h3>No product available with the entered code, please enter a correct one!</h3>
