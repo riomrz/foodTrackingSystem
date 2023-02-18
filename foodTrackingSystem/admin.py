@@ -1,10 +1,12 @@
-from django.contrib import admin
-from .models import Product
+import redis
+from django.contrib import admin, messages
+from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.urls import path
+
 from foodTrackingSystem import models
-import redis
-from django.shortcuts import render
+
+from .models import Product
 
 
 SERVER_IP = '127.0.0.1'
@@ -27,8 +29,6 @@ class FoodTrackingSystemAdminArea(admin.AdminSite):
         return my_urls + urls
 
     def log_on_redis(self, request):
-        print("log on redis")
-
         # create context to return template
         context = dict(
            # Include common variables for rendering the admin template.
@@ -36,7 +36,6 @@ class FoodTrackingSystemAdminArea(admin.AdminSite):
            # Anything else you want in the context...
            # key=value,
         )
-        print("context: ", context)
 
         # check ip (redis client errors don't break the app)
         try:
@@ -47,13 +46,11 @@ class FoodTrackingSystemAdminArea(admin.AdminSite):
                                     charset="utf-8", 
                                     decode_responses=True)
             current_ip = request.META['REMOTE_ADDR']
-            print("current_ip:", current_ip)
             user_email = request.user.email # users must have an email
-            print("user_email: ", user_email)
             last_ip = client.get(user_email)
-            print("last_ip:", last_ip)
             if current_ip != last_ip:
                 client.set(user_email, current_ip)
+                messages.add_message(request, messages.INFO, 'IP address is changed')
         except redis.exceptions.RedisError:
             print("No Redis client")
             return render(request, 'foodTrackingSystem/login_error.html')
