@@ -24,8 +24,3 @@ class Product(models.Model):
         if self._state.adding: 
             self.writeOnChain()
             super(Product, self).save(*args, **kwargs)
-        """ else:
-            message = {
-                "error": "Admin cannot modify products but only delete them"
-            }
-            return Response(message, status=status.HTTP_403_FORBIDDEN) # todo: fix status error code"""
