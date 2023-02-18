@@ -14,7 +14,7 @@ class Product(models.Model):
     # readonly_fields = ['hash', 'txId'] # not working
 
     def writeOnChain(self):
-        self.hash = hashlib.sha256(self.text.encode('utf-8')).hexdigest()
+        self.hash = hashlib.sha256((self.text + self.code).encode('utf-8')).hexdigest()
         self.txId = sendTransaction(self.hash)
     
     def save(self, *args, **kwargs):
